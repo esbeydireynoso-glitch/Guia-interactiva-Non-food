@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AMT | Diagnóstico guiado de productos</title>
+<style>
+:root{
+  --r:#ff441f;--rd:#e93414;--rs:#fff1ed;--ink:#262626;--muted:#6f6f6f;--bg:#f7f7f8;
+  --card:#fff;--line:#e8e8e8;--green:#22b866;--gs:#eaf9f0;--blue:#397fe8;--bs:#edf4ff;
+  --yellow:#e3a51c;--ys:#fff6dc;--purple:#7546c9;--ps:#f2ecff;--shadow:0 14px 40px rgba(40,30,25,.10)
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink)}
+button{font:inherit}
+header{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+.head{max-width:1200px;margin:auto;padding:13px 18px;display:flex;align-items:center;gap:12px}
+.brand{font-weight:950;color:var(--r);font-size:23px}.brand span{color:#777;font-size:14px;margin-left:7px}
+.nav{margin-left:auto;display:flex;gap:8px}.nav button,.soft{border:0;background:#f1f1f1;color:#444;border-radius:12px;padding:10px 13px;font-weight:850;cursor:pointer}
+main{max-width:1200px;margin:auto;padding:28px 18px 70px}.sec{display:none}.sec.on{display:block}
+.hero{background:#fff;border-radius:29px;padding:38px;box-shadow:var(--shadow);border-top:6px solid var(--r);display:grid;grid-template-columns:1.45fr .55fr;gap:25px}
+.tag{display:inline-flex;background:var(--rs);color:var(--rd);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:950}
+.hero h1{font-size:clamp(35px,5vw,56px);line-height:1.02;margin:13px 0}.hero p{font-size:18px;color:var(--muted);line-height:1.55}
+.side{background:var(--rs);border-radius:20px;padding:22px}.side h3{margin-top:0;color:var(--rd)}.side li{margin:10px 0}
+.primary{border:0;background:var(--r);color:#fff;border-radius:14px;padding:13px 18px;font-weight:900;cursor:pointer;box-shadow:0 7px 18px #ff441f35}
+.primary:hover{background:var(--rd)}
+h2{font-size:32px;margin:0 0 8px}.sub{color:var(--muted);line-height:1.5;margin:0 0 20px}
+.processes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.process{background:#fff;border:1px solid var(--line);border-radius:21px;padding:23px;text-align:left;cursor:pointer;box-shadow:var(--shadow);transition:.16s}
+.process:hover{transform:translateY(-3px);border-color:#ffb3a1}
+.ico{width:50px;height:50px;border-radius:15px;background:var(--rs);display:grid;place-items:center;font-size:26px;margin-bottom:13px}
+.process h3{font-size:19px;margin:0 0 8px}.process p{margin:0;color:var(--muted);line-height:1.45}
+.panel{background:#fff;border-radius:25px;padding:29px;box-shadow:var(--shadow)}
+.prog{height:8px;background:#eee;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--r);transition:.2s}
+.pt{font-size:12px;color:#888;font-weight:850;margin:7px 0 20px}.step h2{font-size:29px}.step p{font-size:17px;color:var(--muted);line-height:1.55}
+.check{background:#f8f8f8;border-radius:17px;padding:17px;margin:15px 0}.check b{display:block;margin-bottom:7px}.check ul{margin:0;padding-left:22px;line-height:1.65}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.opt{border:1px solid var(--line);background:#fff;border-radius:17px;padding:18px;text-align:left;cursor:pointer}
+.opt:hover{border-color:var(--r);background:#fff9f7}.opt b{display:block;font-size:17px}.opt span{font-size:13px;color:#888}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.result{padding:22px;border-radius:19px;margin-top:17px;background:var(--gs);border-left:5px solid var(--green)}
+.result.info{background:var(--bs);border-color:var(--blue)}.result.warn{background:var(--ys);border-color:var(--yellow)}.result.escalate{background:var(--ps);border-color:var(--purple)}
+.result h3{margin:0 0 8px}.result p,.result li{line-height:1.6}.result ul{padding-left:22px}
+.macro{display:inline-flex;background:#fff;border:1px solid currentColor;border-radius:999px;padding:6px 10px;font-weight:900;margin:4px 4px 4px 0}
+.block{background:#f7f7f7;border-radius:16px;padding:16px;margin-top:14px;line-height:1.55}.block b{display:block;margin-bottom:6px}
+.copy{border:0;background:#fff;border-radius:10px;padding:8px 11px;font-weight:850;cursor:pointer;margin-top:8px}
+.quickgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.quick{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.quick h3{margin:8px 0}.quick p,.quick li{color:var(--muted);line-height:1.5}.quick ul{padding-left:20px}
+.links a{display:block;color:var(--rd);font-weight:800;margin:9px 0;word-break:break-word}.foot{font-size:12px;color:#888;margin-top:25px}
+@media(max-width:850px){.hero,.processes,.opts,.quickgrid{grid-template-columns:1fr}.nav{display:none}.hero{padding:26px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="brand">AMT <span>Guía de agentes · Productos</span></div><div class="nav">
+<button onclick="go('home')">Inicio</button><button onclick="go('choose')">Diagnóstico</button><button onclick="go('quick')">Consulta rápida</button>
+</div></div></header>
+<main>
+<section id="home" class="sec on">
+  <div class="hero">
+    <div>
+      <span class="tag">TROUBLESHOOTING · CATÁLOGO</span>
+      <h1>Diagnostica problemas de productos sin perderte en el proceso</h1>
+      <p>Selecciona lo que reporta el aliado y avanza con clics. La guía te indica qué pedir, qué validar, qué macro usar, cómo tipificar y cuándo escalar a IM Premium.</p>
+      <button class="primary" onclick="go('choose')">Iniciar diagnóstico →</button>
+    </div>
+    <div class="side">
+      <h3>Antes de empezar</h3>
+      <ul>
+        <li>No asumas que “no visible” significa producto eliminado.</li>
+        <li>Compara Mi Tienda con la web/App cuando el flujo lo indique.</li>
+        <li>Si debes escalar, adjunta contexto y evidencia.</li>
+        <li>Usa la macro y tipificación indicadas en el resultado.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="choose" class="sec">
+  <h2>¿Qué está reportando el aliado?</h2>
+  <p class="sub">Elige el escenario que más se parezca. Cada opción abre un árbol de decisión diferente.</p>
+  <div class="processes">
+    <button class="process" onclick="start('novisible')"><div class="ico">👻</div><h3>Producto no aparece en la app o en Mi Tienda</h3><p>El producto no se ve, no aparece al buscarlo o se visualiza diferente entre sistemas.</p></button>
+    <button class="process" onclick="start('fantasma')"><div class="ico">💡</div><h3>Producto se visualiza aunque esté eliminado o apagado</h3><p>El aliado asegura que lo eliminó o apagó, pero el producto continúa visible.</p></button>
+    <button class="process" onclick="start('stock')"><div class="ico">📦</div><h3>No puedo visualizar o modificar el stock en Mi Tienda</h3><p>El aliado no encuentra el campo de stock o no puede modificarlo.</p></button>
+  </div>
+</section>
+
+<section id="flow" class="sec"><div class="panel">
+  <div class="prog"><div id="bar" class="bar"></div></div><div id="pt" class="pt"></div><div id="body"></div>
+</div></section>
+
+<section id="quick" class="sec">
+<h2>Consulta rápida</h2><p class="sub">Recordatorios y recursos que complementan los tres procesos.</p>
+<div class="quickgrid">
+  <div class="quick"><span class="tag">EVIDENCIA</span><h3>Producto no aparece</h3><ul><li>ID del producto</li><li>Nombre del producto</li><li>Store ID de la tienda</li><li>Validación de corredor/subcorredor</li><li>Evidencia cuando corresponda</li></ul></div>
+  <div class="quick"><span class="tag">EVIDENCIA</span><h3>Producto apagado/eliminado pero visible</h3><ul><li>Nombre completo del producto</li><li>ID de la tienda</li><li>Captura que muestre que fue apagado/eliminado y que sigue visible</li></ul></div>
+  <div class="quick"><span class="tag">STOCK</span><h3>Primera pregunta</h3><p>Confirma si la tienda está integrada. Si es integrada, sigue “AMT - Mi integración no sirve”. Si no es integrada, aplica la regla del módulo de stock del proceso.</p></div>
+  <div class="quick links"><span class="tag">PARTNER CENTER</span><h3>Guías para compartir</h3>
+    <a target="_blank" href="https://rappi-partnercenter.kustomer.help/es/creacin-de-atributos-para-productos-rJ2FUoPzxl">Creación de atributos para productos ↗</a>
+    <a target="_blank" href="https://rappi-partnercenter.kustomer.help/es/cmo-elimino-un-producto-SJDkgQ3FY">¿Cómo elimino un producto? ↗</a>
+    <a target="_blank" href="https://rappi-partnercenter.kustomer.help/es/cmo-prender-o-apagar-productos-ByuklFM28">¿Cómo prender o apagar productos? ↗</a>
+  </div>
+</div>
+<div class="foot">Fuente principal: procesos AMT proporcionados por el usuario. Los enlaces de Partner Center se incluyen como material complementario para orientar al aliado.</div>
+</section>
+</main>
+
+<script>
+const F={
+novisible:[
+ {t:"1 · Reúne la información mínima",p:"Antes de validar el producto, solicita la información indicada en el proceso.",check:"<b>Debes tener:</b><ul><li>ID del producto</li><li>Nombre del producto</li><li>Store ID de la tienda donde no se ve</li></ul>",o:[["Ya tengo la información",1]]},
+ {t:"2 · ¿Cómo se presenta la falla?",p:"Selecciona el escenario exacto que reporta el aliado.",o:[["No se ve en la App o en Mi Tienda",2],["No aparece al buscar por palabras",5],["Se ve diferente en App vs. Mi Tienda",7]]},
+ {t:"3 · Revisa la configuración en Troubleshooting",p:"Valida la configuración con “AMT - Revisión de Productos en Troubleshooting”. ¿El producto tiene corredor y subcorredor?",o:[["Sí, tiene ambos",3],["No tiene corredor o subcorredor","sinCorredor"]]},
+ {t:"4 · Revisa el producto en la web",p:"Después de identificar corredor y subcorredor, búscalo en la web con “AMT - Revisión de Productos en la WEB”.",o:[["El producto sí es visible","visibleWeb"],["El producto NO es visible",4]]},
+ {t:"5 · Valida estado y asociación",p:"Revisa “Verificación de Producto Asociado/Eliminado” y “Verificación de Status del Producto”. ¿Encontraste un error que el aliado puede solucionar?",o:[["Sí, puede corregirlo","solucionAliado"],["No hay un error corregible por el aliado","escalarNoVisible"]]},
+ {t:"3 · Primero valida la tienda",p:"Busca la tienda en la web. ¿La tienda aparece?",o:[["La tienda NO aparece","tiendaNoAparece"],["La tienda sí aparece",6]]},
+ {t:"4 · Busca el producto",p:"Busca el producto en Mi Tienda y revisa si está visible en la web.",o:[["El producto está visible","busqueda20"],["El producto NO está visible",2]]},
+ {t:"3 · Compara ambos sistemas",p:"Busca cómo se visualiza el producto en Mi Tienda y luego compáralo con la web.",o:[["Se ve igual en ambos sistemas","igualSistemas"],["Se ve diferente","diferenteSistemas"]]}
+],
+fantasma:[
+ {t:"1 · Solicita la evidencia",p:"Reúne los datos antes de revisar el estado.",check:"<b>Solicita:</b><ul><li>Nombre completo del producto apagado o eliminado</li><li>ID de la tienda</li><li>Captura que muestre que fue apagado/eliminado desde el portal pero aún aparece en la app</li></ul><div class='macro'>Macro inicial: #ALEstPrdV</div>",o:[["Ya tengo todo",1]]},
+ {t:"2 · Verifica el status del producto",p:"Usa “AMT - Verificación de Status del Producto”. Después revisa cómo aparece en Mi Tienda.",o:[["Está visible/encendido en Mi Tienda","configurarCorrecto"],["NO está visible en Mi Tienda",2]]},
+ {t:"3 · Revisa la web",p:"Valida si el producto es visible usando “AMT - Revisión de Productos en la WEB”.",o:[["No está visible en la web","noNovedad"],["Sí está visible en la web","escalarFantasma"]]}
+],
+stock:[
+ {t:"1 · Confirma si la tienda está integrada",p:"Esta pregunta define el flujo. Usa la macro indicada en el proceso.",check:"<div class='macro'>#ALTdaIntV</div>",o:[["Sí, la tienda es integrada","integrada"],["No es integrada",1]]},
+ {t:"2 · Tienda no integrada",p:"El proceso indica que el campo stock fue eliminado. ¿El aliado menciona que recibió un correo sobre la activación del módulo de stock?",o:[["Sí, recibió la comunicación","activarStock"],["No, solo pregunta por qué no ve/modifica stock","stockInfo"]]}
+]};
+
+const R={
+sinCorredor:{c:"escalate",t:"Escala a segundo nivel",p:"Si el producto no cuenta con corredor o subcorredor, el proceso indica escalar el caso a segundo nivel (IM).",m:"#ALEscCol",tip:"Gestión catálogo > Fallas en Visualización de productos en la APP > Producto no se ve en la app",esc:"Conexión rápida → IM Premium → Product issues - Producto no se ve - Producto no se ve en el app del usuario. Agrega tipo, razón, detalles y adjunto."},
+visibleWeb:{c:"info",t:"El producto sí está visible",p:"Informa al aliado que, después de validar, el producto se encuentra visible.",m:"#ALPrdVisA",tip:"Gestión catálogo > Fallas en Visualización de productos en la APP > Producto no se ve en la app",msg:"Validamos el producto y actualmente se encuentra visible."},
+solucionAliado:{c:"",t:"Hay una corrección que puede hacer el aliado",p:"Indica la solución de acuerdo con el error encontrado en la configuración o estado del producto. Puedes apoyarte en las guías de Partner Center para atributos, eliminación o encendido/apagado cuando correspondan al error.",m:"#ALPrdNVis",tip:"Gestión catálogo > Fallas en Visualización de productos en la APP > Producto no se ve en la app"},
+escalarNoVisible:{c:"escalate",t:"Escala: no hay corrección disponible para el aliado",p:"Informa que debes escalar la solicitud con el equipo encargado.",m:"#ALEscCol",tip:"Gestión catálogo > Fallas en Visualización de productos en la APP > Producto no se ve en la app",esc:"Conexión rápida → IM Premium → Product issues - Producto no se ve - Producto no se ve en el app del usuario. En observación incluye tipo, razón, detalles y adjunto."},
+tiendaNoAparece:{c:"warn",t:"Cambia de proceso",p:"Si la tienda no aparece en la web, no continúes diagnosticando el producto. Sigue “AMT - Mi tienda no aparece en la App / Tienda sin ventas”."},
+busqueda20:{c:"info",t:"El producto está visible",p:"Informa al aliado que, al validar en la App, solo salen primero las 20 tiendas con más ventas.",m:"#ALBuscVis",tip:"Gestión catálogo > Fallas en Visualización de productos en la APP > Producto no se ve en la app"},
+igualSistemas:{c:"info",t:"Se visualiza igual",p:"Informa al aliado que el producto se encuentra igual en ambos sistemas y envía evidencia.",m:"#ALPrdIgl2",tip:"Gestión Catálogo > Fallas en visualización de productos en la App > Producto no se ve en la aplicación como está en la tienda"},
+diferenteSistemas:{c:"escalate",t:"Hay una diferencia entre sistemas",p:"Informa al aliado que debes escalar la solicitud con el equipo encargado.",m:"#ALEscCol",tip:"Gestión catálogo > Fallas en Visualización de productos en la APP > Producto no se ve en la app",esc:"Conexión rápida → IM Premium → Product issues - Producto no se ve - Producto no se ve en el app del usuario. Incluye tipo, razón, detalles y adjunto."},
+configurarCorrecto:{c:"warn",t:"El producto sigue visible/encendido en Mi Tienda",p:"Informa al aliado que el producto está encendido o visible en Mi Tienda y debe ajustar correctamente su configuración.",m:"Eliminado: #ALPrdNoEl · Apagado: #ALPrdNoAp",tip:"Productos > Fallas en visualización de productos en la APP > Producto se ve aunque está apagado",msg:"El producto aún aparece encendido o visible en Mi Tienda. Es necesario ajustar su configuración desde el portal."},
+noNovedad:{c:"info",t:"No hay novedad de visualización",p:"El producto tampoco está visible en la web. Informa al aliado que no se identifica la novedad reportada.",m:"#ALNoVisAW",tip:"Productos > Fallas en visualización de productos en la APP > Producto se ve aunque está apagado"},
+escalarFantasma:{c:"escalate",t:"Producto apagado visible en App",p:"El producto no está visible en Mi Tienda pero sí aparece en la web. Escala a segundo nivel.",tip:"Productos > Fallas en visualización de productos en la APP > Producto se ve aunque está apagado",esc:"Conexión rápida → IM Premium → Product issues - Otros problemas en productos - Producto apagado visible en App. Incluye tipo, razón, detalles y adjunto."},
+integrada:{c:"warn",t:"Usa el proceso de integraciones",p:"Si el aliado es integrado, sigue el proceso “AMT - Mi integración no sirve”. No continúes con el flujo de stock para tiendas no integradas."},
+activarStock:{c:"escalate",t:"Gestiona la activación del módulo de stock",p:"Si el aliado recibió por correo una comunicación sobre la activación del módulo, escala a segundo nivel para gestionar la activación.",m:"#ALStkInfo",tip:"Gestión catálogo > Actualización de productos > Incidente no tipificado en actualizaciones de productos",esc:"Conexión rápida → IM Premium → Product issues - Otros problemas en productos - Otros problemas. Incluye tipo, razón, detalles y adjunto."},
+stockInfo:{c:"info",t:"El campo stock fue eliminado",p:"Informa al aliado que el campo stock fue eliminado y por eso no puede visualizarlo en su tienda.",m:"#ALStkInfo",tip:"Gestión catálogo > Actualización de productos > Incidente no tipificado en actualizaciones de productos",msg:"El campo stock fue eliminado y por eso actualmente no puedes visualizarlo en tu tienda."}
+};
+
+let flow="",step=0;
+function go(id){
+  document.querySelectorAll(".sec").forEach(x=>x.classList.remove("on"));
+  document.getElementById(id).classList.add("on");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function start(f){flow=f;step=0;go("flow");render();}
+function render(){
+  const a=F[flow],s=a[step],pct=Math.round((step+1)/a.length*100);
+  document.getElementById("bar").style.width=pct+"%";
+  document.getElementById("pt").textContent=`Paso ${step+1} de ${a.length}`;
+  document.getElementById("body").innerHTML=
+  `<div class="step"><h2>${s.t}</h2><p>${s.p}</p>${s.check?`<div class="check">${s.check}</div>`:""}
+  <div class="opts">${s.o.map(x=>`<button class="opt" onclick="pick('${x[1]}')"><b>${x[0]}</b><span>Continuar →</span></button>`).join("")}</div>
+  <div class="actions"><button class="soft" onclick="go('choose')">⌂ Menú inicial</button>${step?'<button class="soft" onclick="back()">←</button>':''}</div></div>`;
+}
+function pick(x){if(/^\d+$/.test(x)){step=+x;render();}else{result(x);}}
+function back(){if(step>0){step--;render();}}
+function result(k){
+  const r=R[k];
+  document.getElementById("bar").style.width="100%";
+  document.getElementById("pt").textContent="Diagnóstico completado";
+  document.getElementById("body").innerHTML=
+  `<span class="tag">RESULTADO</span><h2 style="margin-top:12px">${r.t}</h2>
+  <div class="result ${r.c||""}"><h3>Qué hacer</h3><p>${r.p}</p>
+  ${r.m?`<div><span class="macro">📝 ${r.m}</span></div>`:""}
+  ${r.esc?`<div class="block"><b>🪜 Escalamiento</b>${r.esc}</div>`:""}
+  ${r.tip?`<div class="block"><b>✅ Tipificación</b>${r.tip}<br>Marca como hecho.</div>`:""}
+  </div>
+  ${r.msg?`<div class="block"><b>💬 Mensaje base para el aliado</b><span id="copytxt">${r.msg}</span><br><button class="copy" onclick="copyMsg()">Copiar mensaje</button></div>`:""}
+  <div class="actions"><button class="primary" onclick="go('choose')">⌂ Menú inicial</button><button class="soft" onclick="start(flow)">←</button></div>`;
+}
+function copyMsg(){
+  const el=document.getElementById("copytxt");
+  if(el && navigator.clipboard) navigator.clipboard.writeText(el.innerText);
+}
+</script>
+</body>
+</html>
